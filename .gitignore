@@ -1,0 +1,12 @@
+/admin/
+/catalog/
+/image/
+/system/
+/.htaccess.txt
+/config.php
+/error.html
+/index.php
+/php.ini
+/robots.txt
+/extension/*
+!/extension/x_feedback_button
