@@ -31,8 +31,6 @@ class Button extends \Opencart\System\Engine\Controller
         $data['save'] = $this->url->link($this->extension_path . '|save', 'user_token=' . $this->session->data['user_token']);
         $data['back'] = $this->url->link('marketplace/extension', 'user_token=' . $this->session->data['user_token'] . '&type=module');
 
-        $data['module_filter_status'] = $this->config->get('module_filter_status');
-
         $data['header'] = $this->load->controller('common/header');
         $data['column_left'] = $this->load->controller('common/column_left');
         $data['footer'] = $this->load->controller('common/footer');
