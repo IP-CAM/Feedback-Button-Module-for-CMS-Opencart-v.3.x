@@ -17,6 +17,49 @@
         <div class="card">
             <div class="card-header"><i class="fa-solid fa-pencil"></i> {{ text_edit }}</div>
             <div class="card-body">
+                <form id="form-module" action="{{ save }}" method="post" data-oc-toggle="ajax">
+                    <ul class="nav nav-tabs">
+                        <li class="nav-item"><a href="#tab-history" data-bs-toggle="tab" class="nav-link active">History</a></li>
+                        <li class="nav-item"><a href="#tab-settings" data-bs-toggle="tab" class="nav-link">Settings</a></li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane active" id="tab-history">
+                            <div class="tab-content">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover">
+                                        <thead>
+                                        <tr>
+                                            <td class="text-center">Name</td>
+                                            <td class="text-center">E-mail</td>
+                                            <td class="text-center">Phone</td>
+                                            <td class="text-center">Comment</td>
+                                            <td class="text-center">Status</td>
+                                            <td class="text-center">Actions</td>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td class="text-center">John Doe</td>
+                                                <td class="text-center">johndoe@mail.com</td>
+                                                <td class="text-center">+380501112233</td>
+                                                <td class="text-center">Please call me</td>
+                                                <td class="text-center">New</td>
+                                                <td class="text-center">
+                                                    <button type="button" class="btn btn-info"><i class="fa-solid fa-edit"></i></button>
+                                                    <button type="button" class="btn btn-danger"><i class="fa-solid fa-remove"></i></button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tab-pane" id="tab-settings">
+                            2
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
