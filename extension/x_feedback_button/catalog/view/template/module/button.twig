@@ -1,0 +1,142 @@
+<button class="xu-callback-button" id="xu-callback-button">{% if not text_image.show_image %}{{ text_image.text }}{% endif %}</button>
+
+<div id="callback-button-modal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">{{ header_text }}</h3>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="error">{{ messages_texts.error_text }}</div>
+                <div class="mb-3">
+                    {% if show_fields.show_name %}
+                    <label for="input-name" class="form-label mt-2">{{ fields_names.name_name_field }} {% if show_fields.name_required %}*{% endif %}</label>
+                    <input type="text" value="" class="form-control bg-white" id="input-name" {% if show_fields.name_required %}required{% endif %}/>
+                    {% endif %}
+                    {% if show_fields.show_email %}
+                    <label for="input-email" class="form-label mt-2">{{ fields_names.name_email_field }} {% if show_fields.email_required %}*{% endif %}</label>
+                    <input type="email" value="" class="form-control bg-white" id="input-email" {% if show_fields.email_required %}required{% endif %}/>
+                    {% endif %}
+                    {% if show_fields.show_phone %}
+                    <label for="input-phone" class="form-label mt-2">{{ fields_names.name_phone_field }} {% if show_fields.phone_required %}*{% endif %}</label>
+                    <input type="tel" value="" class="form-control bg-white" id="input-phone" {% if show_fields.phone_required %}required{% endif %}/>
+                    {% endif %}
+                    {% if show_fields.show_comment %}
+                    <label for="input-comment" class="form-label mt-2">{{ fields_names.name_comment_field }} {% if show_fields.comment_required %}*{% endif %}</label>
+                    <input type="text" value="" class="form-control bg-white" id="input-comment" {% if show_fields.comment_required %}required{% endif %}/>
+                    {% endif %}
+
+                </div>
+                <div class="mb-3 text-center">
+                    <button type="submit" class="btn btn-success mt-2" id="callback-form-submit">{{ button_text }}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+        .xu-callback-button {
+        {% if button_position %}
+                {% if button_position.right != 0 %}
+                    right: {{ button_position.right }}%;
+                {% endif %}
+                {% if button_position.top != 0 %}
+                    top: {{ button_position.top }}%;
+                {% endif %}
+                {% if button_position.bottom != 0 %}
+                    bottom: {{ button_position.bottom }}%;
+                {% endif %}
+                {% if button_position.left != 0 %}
+                    left: {{ button_position.left }}%;
+                {% endif %}
+        {% endif %}
+        {% if text_image.show_image %}
+            background-image: url({{ text_image.img_path }});
+        {% endif %}
+        width: {% if button_size.width is not empty %}{{ button_size.width }}{% else %}95{% endif %}px;
+        height: {% if button_size.height is not empty %}{{ button_size.height }}{% else %}95{% endif %}px;
+
+        color: {{ colors.button_text_color }};
+        box-shadow: 0 0 0 0 {{ colors.button_color }};
+        background-color: {{ colors.button_color }};
+
+        font-size: {% if button_size.button_text_size is not empty %}{{ button_size.button_text_size }}{% else %}18{% endif %}px;
+        }
+        #callback-button-modal .modal-content {
+            background-color: {{ colors.form_color }};
+        }
+        button#callback-form-submit {
+            background: {{ colors.send_button_color }};
+        }
+        #callback-button-modal label {
+            color: {{ colors.text_on_form_color }};
+        }
+        #callback-button-modal .modal-title {
+            color: {{ colors.text_on_form_color }};
+        }
+        .callback-success {
+            color: {{ colors.text_on_form_color }};
+        }
+</style>
+
+<script>
+    /**
+     * FORM HANDLING
+     */
+    $("#callback-form-submit").on('click', function () {
+        $("#callback-form-submit").removeAttr('disabled')
+        let errors = false;
+
+        $("#callback-button-modal .error").hide();
+        $("#input-name").removeClass('input-error');
+        $("#input-email").removeClass('input-error');
+        $("#input-phone").removeClass('input-error');
+        $("#input-comment").removeClass('input-error');
+
+        if ($("#input-name").prop('required') && $.trim($('#input-name').val()) == '') {
+            $("#input-name").addClass('input-error');
+            errors = true;
+        }
+
+        if ($("#input-email").prop('required') && $.trim($('#input-email').val()) == '') {
+            $("#input-email").addClass('input-error');
+            errors = true;
+        }
+
+        if ($("#input-phone").prop('required') && $.trim($('#input-phone').val()) == '') {
+            $("#input-phone").addClass('input-error');
+            errors = true;
+        }
+
+        if ($("#input-comment").prop('required') && $.trim($('#input-comment').val()) == '') {
+            $("#input-comment").addClass('input-error');
+            errors = true;
+        }
+
+        if (!errors) {
+            $(this).prop('disabled', true);
+            $.ajax({
+                url: 'index.php?route=extension/x_feedback_button/module/button|saveRequest',
+                method: 'post',
+                dataType: 'json',
+                'data': {
+                    'name': $("#input-name").val(),
+                    'email': $("#input-email").val(),
+                    'phone': $("#input-phone").val(),
+                    'comment': $("#input-comment").val(),
+                },
+                success: function (data) {
+                    $("#callback-form-submit").removeAttr('disabled')
+                    $("#callback-button-modal .modal-body").html('<div class="callback-success">{{ messages_texts.success_text }}</div>');
+                },
+                error: function () {
+                    $("#callback-form-submit").removeAttr('disabled')
+                    $("#callback-button-modal .error").show();
+                }
+            });
+        }
+
+    });
+</script>

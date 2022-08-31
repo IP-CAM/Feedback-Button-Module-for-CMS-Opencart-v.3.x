@@ -20,13 +20,14 @@
                 <form id="form-module" action="{{ save }}" method="post" data-oc-toggle="ajax">
                     <ul class="nav nav-tabs">
                         <li class="nav-item"><a href="#tab-history" data-bs-toggle="tab" class="nav-link active">History</a></li>
-                        <li class="nav-item"><a href="#tab-settings" data-bs-toggle="tab" class="nav-link">Settings</a></li>
+                        <li class="nav-item"><a href="#tab-button-settings" data-bs-toggle="tab" class="nav-link">Button settings</a></li>
+                        <li class="nav-item"><a href="#tab-form-settings" data-bs-toggle="tab" class="nav-link">Form settings</a></li>
                     </ul>
                     <div class="tab-content">
                         <div class="tab-pane active" id="tab-history">
                             <div class="tab-content">
                                 <div class="table-responsive">
-                                    <table class="table table-bordered table-hover">
+                                    <table id="callback-requests-table" class="table table-bordered table-hover">
                                         <thead>
                                         <tr>
                                             <td class="text-center">Name</td>
@@ -38,25 +39,257 @@
                                         </tr>
                                         </thead>
                                         <tbody>
+                                        {% for request in requests %}
                                             <tr>
-                                                <td class="text-center">John Doe</td>
-                                                <td class="text-center">johndoe@mail.com</td>
-                                                <td class="text-center">+380501112233</td>
-                                                <td class="text-center">Please call me</td>
-                                                <td class="text-center">New</td>
+                                                <td class="text-center"><input type="text" name="name_{{ request.id }}" value="{{ request.name }}" autocomplete="nope" class="form-control"/></td>
+                                                <td class="text-center"><input type="text" name="email_{{ request.id }}" value="{{ request.email }}" autocomplete="nope" class="form-control"/></td>
+                                                <td class="text-center"><input type="text" name="phone_{{ request.id }}" value="{{ request.phone }}" autocomplete="nope" class="form-control"/></td>
+                                                <td class="text-center"><input type="text" name="comment_{{ request.id }}" value="{{ request.comment }}" autocomplete="nope" class="form-control"/></td>
                                                 <td class="text-center">
-                                                    <button type="button" class="btn btn-info"><i class="fa-solid fa-edit"></i></button>
-                                                    <button type="button" class="btn btn-danger"><i class="fa-solid fa-remove"></i></button>
+                                                    <select name="status_{{ request.id }}" class="form-select">
+                                                        <option value="new"{% if request.status == 'new' %} selected="selected"{% endif %}>New</option>
+                                                        <option value="in-pending"{% if request.status == 'in-pending' %} selected="selected"{% endif %}>In pending</option>
+                                                        <option value="closed"{% if request.status == 'closed' %} selected="selected"{% endif %}>Closed</option>
+                                                    </select>
+                                                </td>
+                                                <td class="text-center">
+                                                    <button type="button" class="btn btn-info save-request" data-request-id="{{ request.id }}"><i class="fa-solid fa-save"></i></button>
+                                                    <button type="button" class="btn btn-danger delete-request" data-request-id="{{ request.id }}"><i class="fa-solid fa-remove"></i></button>
                                                 </td>
                                             </tr>
+                                        {% endfor %}
                                         </tbody>
                                     </table>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="tab-pane" id="tab-settings">
-                            2
+                        <div class="tab-pane" id="tab-button-settings">
+                            <div class="row mb-3">
+                                <label for="input-status" class="col-sm-2 col-form-label">Enable button</label>
+                                <div class="col-sm-10">
+                                    <div class="form-check form-switch form-switch-lg">
+                                        <input type="hidden" name="status" value="0"/>
+                                        <input type="checkbox" name="module_button_status" value="1" id="input-status" class="form-check-input"{% if module_button_status %} checked{% endif %}/>
+                                    </div>
+                                </div>
+                            </div>
+                            <h3 class="text-center">Position and size</h3>
+                            <div class="row mb-3">
+                                <label for="button-position" class="col-sm-2 col-form-label">Button position</label>
+                                <div class="col-sm-10">
+                                    <select name="button_position" id="button-position" class="form-select">
+                                        <option value="lower-left-corner"{% if button_settings.position.data.position == 'lower-left-corner' %} selected="selected"{% endif %}>Lower left corner</option>
+                                        <option value="lower-right-corner"{% if button_settings.position.data.position == 'lower-right-corner' %} selected="selected"{% endif %}>Lower right corner</option>
+                                        <option value="upper-left-corner"{% if button_settings.position.data.position == 'upper-left-corner' %} selected="selected"{% endif %}>Upper left corner</option>
+                                        <option value="upper-right-corner"{% if button_settings.position.data.position == 'upper-right-corner' %} selected="selected"{% endif %}>Upper right corner</option>
+                                        <option value="custom-settings"{% if button_settings.position.data.custom %} selected="selected"{% endif %}>Custom settings</option>
+                                    </select>
+                                </div>
+
+                                <label for="button-left" class="col-sm-2 col-form-label mt-2 custom-position-section">Left indent (in percents)</label>
+                                <div class="col-sm-10 mt-2 custom-position-section">
+                                    <input type="number" name="button_left" value="{{ button_settings.position.data.left }}" placeholder="" id="button-left" class="form-control"/>
+                                </div>
+
+                                <label for="button-top" class="col-sm-2 col-form-label mt-2 custom-position-section">Top indent (in percents)</label>
+                                <div class="col-sm-10 mt-2 custom-position-section">
+                                    <input type="number" name="button_top" value="{{ button_settings.position.data.top }}" placeholder="" id="button-top" class="form-control"/>
+                                </div>
+
+                                <label for="button-right" class="col-sm-2 col-form-label mt-2 custom-position-section">Right indent (in percents)</label>
+                                <div class="col-sm-10 mt-2 custom-position-section">
+                                    <input type="number" name="button_right" value="{{ button_settings.position.data.right }}" placeholder="" id="button-right" class="form-control"/>
+                                </div>
+
+                                <label for="button-bottom" class="col-sm-2 col-form-label mt-2 custom-position-section">Bottom indent (in percents)</label>
+                                <div class="col-sm-10 mt-2 custom-position-section">
+                                    <input type="number" name="button_bottom" value="{{ button_settings.position.data.bottom }}" placeholder="" id="button-bottom" class="form-control"/>
+                                </div>
+
+                                <label for="button-width" class="col-sm-2 col-form-label mt-2">Button width (in pixels)</label>
+                                <div class="col-sm-10 mt-2">
+                                    <input type="number" name="button_width" value="{{ button_settings.button_size.width }}" placeholder="Leave empty for default value" id="button-width" class="form-control"/>
+                                </div>
+
+                                <label for="button-height" class="col-sm-2 col-form-label mt-2">Button height (in pixels)</label>
+                                <div class="col-sm-10 mt-2">
+                                    <input type="number" name="button_height" value="{{ button_settings.button_size.height }}" placeholder="Leave empty for default value" id="button-height" class="form-control"/>
+                                </div>
+                            </div>
+
+                            <h3 class="text-center mt-5">Text and image</h3>
+                            <div class="row mb-3">
+                                <label for="show-image" class="col-sm-2 col-form-label">Show image on button</label>
+                                <div class="col-sm-10">
+                                    <div class="form-check form-switch form-switch-lg">
+                                        <input type="hidden" name="show_image" value="0"/>
+                                        <input type="checkbox" name="show_image" value="1" id="show-image" class="form-check-input"{% if button_settings.text_image.show_image %} checked{% endif %}/>
+                                    </div>
+                                </div>
+
+                                {% for language in languages %}
+                                <label for="button-text-{{ language.code }}" class="col-sm-2 col-form-label mt-2 button-text-section">Button text ({{ language.name }})</label>
+                                <div class="col-sm-10 mt-2 button-text-section">
+                                    <input type="text" name="button_text[{{ language.code }}]" value="{{ button_settings.text_image[language.code] }}" placeholder="" id="button-text-{{ language.code }}"  class="form-control"/>
+                                    <div id="error-button-text-{{ language.code }}" class="invalid-feedback"></div>
+                                </div>
+                                {% endfor %}
+                                <label for="button-text-size" class="col-sm-2 col-form-label mt-2 button-text-section">Button text size</label>
+                                <div class="col-sm-10 mt-2 button-text-section">
+                                    <input type="number" name="button_text_size" value="{{ button_settings.button_size.button_text_size }}" placeholder="Leave empty for default value" id="button-text-size" class="form-control"/>
+                                </div>
+                                <label for="button-image" class="col-sm-2 col-form-label mt-2 button-image-section">Button image</label>
+                                <div class="col-sm-10 mt-2 button-image-section">
+                                    <div class="card image">
+                                        <img src="{{ button_settings.text_image.img_thumb }}" alt="" title="" id="button-image" class="card-img-top"/>
+                                        <input type="hidden" name="button_image" value="{{ button_settings.text_image.img_path }}" id="h-button-image"/>
+                                        <div class="card-body">
+                                            <button type="button" data-oc-toggle="image" data-oc-target="#h-button-image" data-oc-thumb="#button-image" class="btn btn-primary btn-sm btn-block"><i class="fa-solid fa-pencil"></i> {{ button_edit }}</button>
+                                            <button type="button" data-oc-toggle="clear" data-oc-target="#h-button-image" data-oc-thumb="#button-image" class="btn btn-warning btn-sm btn-block"><i class="fa-regular fa-trash-can"></i> {{ button_clear }}</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <h3 class="text-center mt-5">Colors</h3>
+                            <div class="row mb-3">
+                                <label for="button-color" class="col-sm-2 col-form-label mt-2">Callback button color</label>
+                                <div class="col-sm-10 mt-1">
+                                    <input type="color" name="button_color" value="{{ button_settings.colors.button_color }}" id="button-color" class="form-control form-control-color"/>
+                                </div>
+                                <label for="button-text-color" class="col-sm-2 col-form-label mt-2">Button text color</label>
+                                <div class="col-sm-10 mt-1">
+                                    <input type="color" name="button_text_color" value="{{ button_settings.colors.button_text_color }}" id="button-text-color" class="form-control form-control-color"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane" id="tab-form-settings">
+                            <div class="tab-content">
+                                <h3 class="text-center">Texts and fields</h3>
+                                <div class="row mb-3">
+                                    {% for language in languages %}
+                                    <label for="header-text" class="col-sm-2 col-form-label mt-2">Header text ({{ language.name }})</label>
+                                    <div class="col-sm-10 mt-2">
+                                        <input type="text" name="header_text[{{ language.code }}]" value="{{ button_settings.header_text[language.code] }}" placeholder="" id="header-text"  class="form-control"/>
+                                        <div id="error-header-text-{{ language.code }}" class="invalid-feedback"></div>
+                                    </div>
+                                    {% endfor %}
+                                    <label for="show-name-field" class="col-sm-2 col-form-label mt-2">Show Name field</label>
+                                    <div class="col-sm-10 mt-2">
+                                        <div class="form-check form-switch form-switch-lg">
+                                            <input type="hidden" name="show_name" value="0"/>
+                                            <input type="checkbox" name="show_name" value="1" id="show-name-field" class="form-check-input"{% if button_settings.show_fields.show_name %} checked{% endif %}/>
+                                        </div>
+                                    </div>
+                                    <label for="name-required" class="col-sm-2 col-form-label mt-2">Name required field</label>
+                                    <div class="col-sm-10 mt-2">
+                                        <div class="form-check form-switch form-switch-lg">
+                                            <input type="hidden" name="name_required" value="0"/>
+                                            <input type="checkbox" name="name_required" value="1" id="name-required" class="form-check-input"{% if button_settings.show_fields.name_required %} checked{% endif %}/>
+                                        </div>
+                                    </div>
+                                    <label for="show-email-field" class="col-sm-2 col-form-label mt-2">Show E-mail field</label>
+                                    <div class="col-sm-10 mt-2">
+                                        <div class="form-check form-switch form-switch-lg">
+                                            <input type="hidden" name="show_email" value="0"/>
+                                            <input type="checkbox" name="show_email" value="1" id="show-email-field" class="form-check-input"{% if button_settings.show_fields.show_email %} checked{% endif %}/>
+                                        </div>
+                                    </div>
+                                    <label for="email-required" class="col-sm-2 col-form-label mt-2">E-mail required field</label>
+                                    <div class="col-sm-10 mt-2">
+                                        <div class="form-check form-switch form-switch-lg">
+                                            <input type="hidden" name="email_required" value="0"/>
+                                            <input type="checkbox" name="email_required" value="1" id="email-required" class="form-check-input"{% if button_settings.show_fields.email_required %} checked{% endif %}/>
+                                        </div>
+                                    </div>
+                                    <label for="show-phone-field" class="col-sm-2 col-form-label mt-2">Show Phone field</label>
+                                    <div class="col-sm-10 mt-2">
+                                        <div class="form-check form-switch form-switch-lg">
+                                            <input type="hidden" name="show_phone" value="0"/>
+                                            <input type="checkbox" name="show_phone" value="1" id="show-phone-field" class="form-check-input"{% if button_settings.show_fields.show_phone %} checked{% endif %}/>
+                                        </div>
+                                    </div>
+                                    <label for="phone-required" class="col-sm-2 col-form-label mt-2">Phone required field</label>
+                                    <div class="col-sm-10 mt-2">
+                                        <div class="form-check form-switch form-switch-lg">
+                                            <input type="hidden" name="phone_required" value="0"/>
+                                            <input type="checkbox" name="phone_required" value="1" id="phone-required" class="form-check-input"{% if button_settings.show_fields.phone_required %} checked{% endif %}/>
+                                        </div>
+                                    </div>
+                                    <label for="show-comment-field" class="col-sm-2 col-form-label mt-2">Show Comment field</label>
+                                    <div class="col-sm-10 mt-2">
+                                        <div class="form-check form-switch form-switch-lg">
+                                            <input type="hidden" name="show_comment" value="0"/>
+                                            <input type="checkbox" name="show_comment" value="1" id="show-comment-field" class="form-check-input"{% if button_settings.show_fields.show_comment %} checked{% endif %}/>
+                                        </div>
+                                    </div>
+                                    <label for="comment-required" class="col-sm-2 col-form-label mt-2">Comment required field</label>
+                                    <div class="col-sm-10 mt-2">
+                                        <div class="form-check form-switch form-switch-lg">
+                                            <input type="hidden" name="comment_required" value="0"/>
+                                            <input type="checkbox" name="comment_required" value="1" id="comment-required" class="form-check-input"{% if button_settings.show_fields.comment_required %} checked{% endif %}/>
+                                        </div>
+                                    </div>
+                                    {% for language in languages %}
+                                        <label class="col-sm-2 col-form-label mt-2">Name of name field ({{ language.name }})</label>
+                                        <div class="col-sm-10 mt-2">
+                                            <input type="text" name="name_name_field[{{ language.code }}]" value="{{ button_settings.fields_names.name_name_field[language.code] }}" placeholder="" class="form-control"/>
+                                        </div>
+                                    {% endfor %}
+                                    {% for language in languages %}
+                                        <label class="col-sm-2 col-form-label mt-2">Name of email field ({{ language.name }})</label>
+                                        <div class="col-sm-10 mt-2">
+                                            <input type="text" name="name_email_field[{{ language.code }}]" value="{{ button_settings.fields_names.name_email_field[language.code] }}" placeholder="" class="form-control"/>
+                                        </div>
+                                    {% endfor %}
+                                    {% for language in languages %}
+                                        <label class="col-sm-2 col-form-label mt-2">Name of phone field ({{ language.name }})</label>
+                                        <div class="col-sm-10 mt-2">
+                                            <input type="text" name="name_phone_field[{{ language.code }}]" value="{{ button_settings.fields_names.name_phone_field[language.code] }}" placeholder="" class="form-control"/>
+                                        </div>
+                                    {% endfor %}
+                                    {% for language in languages %}
+                                        <label class="col-sm-2 col-form-label mt-2">Name of comment field ({{ language.name }})</label>
+                                        <div class="col-sm-10 mt-2">
+                                            <input type="text" name="name_comment_field[{{ language.code }}]" value="{{ button_settings.fields_names.name_comment_field[language.code] }}" placeholder="" class="form-control"/>
+                                        </div>
+                                    {% endfor %}
+                                    {% for language in languages %}
+                                        <label class="col-sm-2 col-form-label mt-2">Button text ({{ language.name }})</label>
+                                        <div class="col-sm-10 mt-2">
+                                            <input type="text" name="form_button_text[{{ language.code }}]" value="{{ button_settings.button_text[language.code] }}" placeholder="" class="form-control"/>
+                                        </div>
+                                    {% endfor %}
+                                    {% for language in languages %}
+                                        <label class="col-sm-2 col-form-label mt-2">Success text ({{ language.name }})</label>
+                                        <div class="col-sm-10 mt-2">
+                                            <input type="text" name="success_text[{{ language.code }}]" value="{{ button_settings.messages_texts.success_text[language.code] }}" placeholder="" class="form-control"/>
+                                        </div>
+                                    {% endfor %}
+                                    {% for language in languages %}
+                                        <label class="col-sm-2 col-form-label mt-2">Error text ({{ language.name }})</label>
+                                        <div class="col-sm-10 mt-2">
+                                            <input type="text" name="error_text[{{ language.code }}]" value="{{ button_settings.messages_texts.error_text[language.code] }}" placeholder="" class="form-control"/>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                                <h3 class="text-center mt-5">Colors</h3>
+                                <div class="row mb-3">
+                                    <label for="form-color" class="col-sm-2 col-form-label mt-2">Form color</label>
+                                    <div class="col-sm-10 mt-1">
+                                        <input type="color" name="form_color" value="{{ button_settings.colors.form_color }}" id="form-color" class="form-control form-control-color"/>
+                                    </div>
+                                    <label for="send-button-color" class="col-sm-2 col-form-label mt-2">Send button color</label>
+                                    <div class="col-sm-10 mt-1">
+                                        <input type="color" name="send_button_color" value="{{ button_settings.colors.send_button_color }}" id="send-button-color" class="form-control form-control-color"/>
+                                    </div>
+                                    <label for="text-on-form-color" class="col-sm-2 col-form-label mt-2">Text color on the form</label>
+                                    <div class="col-sm-10 mt-1">
+                                        <input type="color" name="text_on_form_color" value="{{ button_settings.colors.text_on_form_color }}" id="text-on-form-color" class="form-control form-control-color"/>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </form>
@@ -64,4 +297,54 @@
         </div>
     </div>
 </div>
+
+<script>
+    $(".save-request").on('click', function () {
+        let request_id = $(this).data('request-id');
+        let name = $("[name='name_"+ request_id +"']").val();
+        let email = $("[name='email_"+ request_id +"']").val();
+        let phone = $("[name='phone_"+ request_id +"']").val();
+        let comment = $("[name='comment_"+ request_id +"']").val();
+        let status = $("[name='status_"+ request_id +"']").val();
+        $.ajax({
+            url: 'index.php?route=extension/x_feedback_button/module/button|saveRequest&user_token={{ user_token }}',
+            method: 'post',
+            dataType: 'json',
+            data: {
+                request_id: request_id,
+                name: name,
+                email: email,
+                phone: phone,
+                comment: comment,
+                status: status
+            },
+            success: function () {
+                alert('Request edited successfully!')
+            },
+            error: function () {
+                alert('Something went wrong. Please try again.');
+            }
+        });
+    });
+
+    $(".delete-request").on('click', function () {
+        if (confirm('Are you sure you want to delete? This action cannot be canceled!')) {
+            $.ajax({
+                url: 'index.php?route=extension/x_feedback_button/module/button|deleteRequest&user_token={{ user_token }}',
+                method: 'post',
+                dataType: 'json',
+                data: {
+                    request_id: $(this).data('request-id')
+                },
+                success: function () {
+                    alert('Request deleted successfully!');
+                    location.reload();
+                },
+                error: function () {
+                    alert('Something went wrong. Please try again.');
+                }
+            });
+        }
+    });
+</script>
 {{ footer }}

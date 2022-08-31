@@ -1,0 +1,57 @@
+.xu-callback-button {
+    position:fixed;
+    border: none;
+    font-size: 18px;
+    border-radius: 50%;
+    background-position: center;
+    background-size:40px;
+    background-repeat: no-repeat;
+    cursor: pointer;
+    -webkit-animation: pulse 1.25s infinite cubic-bezier(0.66, 0, 0, 1);
+    -moz-animation: pulse 1.25s infinite cubic-bezier(0.66, 0, 0, 1);
+    -ms-animation: pulse 1.25s infinite cubic-bezier(0.66, 0, 0, 1);
+    animation: pulse 1.25s infinite cubic-bezier(0.66, 0, 0, 1);
+}
+.xu-callback-button:hover
+{
+    -webkit-transform: scale(0.9);
+    -ms-transform: scale(0.9);
+    transform: scale(0.9);
+
+    /*-webkit-animation: none;-moz-animation: none;-ms-animation: none;animation: none;*/
+}
+
+@-webkit-keyframes pulse {to {box-shadow: 0 0 0 20px rgba(232, 76, 61, 0);}}
+@-moz-keyframes pulse {to {box-shadow: 0 0 0 20px rgba(232, 76, 61, 0);}}
+@-ms-keyframes pulse {to {box-shadow: 0 0 0 20px rgba(232, 76, 61, 0);}}
+@keyframes pulse {to {box-shadow: 0 0 0 20px rgba(232, 76, 61, 0);}}
+
+#callback-button-modal label {
+    color: #000000;
+    font-weight: bold;
+    font-size: 12px;
+}
+
+#callback-button-modal .modal-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+#callback-button-modal .error {
+    color: red;
+    display: none;
+}
+
+.input-error {
+    border: 1px solid red;
+}
+
+.callback-success {
+    color: #49ab1c;
+    font-size: 15px;
+}
+
+button#callback-form-submit {
+    border: 0px;
+}
