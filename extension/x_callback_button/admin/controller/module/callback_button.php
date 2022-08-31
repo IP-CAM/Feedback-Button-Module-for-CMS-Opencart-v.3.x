@@ -6,7 +6,7 @@ use \Opencart\System\Helper AS Helper;
 
 class CallbackButton extends \Opencart\System\Engine\Controller
 {
-    private const EXTENSION_PATH = 'extension/x_feedback_button/module/button';
+    private const EXTENSION_PATH = 'extension/x_callback_button/module/button';
 
     private array $languages;
 
@@ -23,7 +23,7 @@ class CallbackButton extends \Opencart\System\Engine\Controller
     {
         $this->document->setTitle($this->language->get('heading_title'));
 
-        $this->document->addScript('/extension/x_feedback_button/admin/view/js/main.js');
+        $this->document->addScript('/extension/x_callback_button/admin/view/js/main.js');
 
         $data['breadcrumbs'] = [];
 
@@ -42,14 +42,14 @@ class CallbackButton extends \Opencart\System\Engine\Controller
             'href' => $this->url->link(self::EXTENSION_PATH, 'user_token=' . $this->session->data['user_token'])
         ];
 
-        $data['button_settings'] = $this->model_extension_x_feedback_button_module_button->getSettings();
+        $data['button_settings'] = $this->model_extension_x_callback_button_module_button->getSettings();
 
         if ($data['button_settings']['text_image']['show_image']) {
             $this->load->model('tool/image');
             $data['button_settings']['text_image']['img_thumb'] = $this->model_tool_image->resize(html_entity_decode($data['button_settings']['text_image']['img_path'], ENT_QUOTES, 'UTF-8'), 190, 190);
         }
 
-        $data['requests'] = $this->model_extension_x_feedback_button_module_button->getRequests();
+        $data['requests'] = $this->model_extension_x_callback_button_module_button->getRequests();
 
         $data['user_token'] = $this->session->data['user_token'];
        // echo '<pre>'; print_r($data['requests']); echo '</pre>';
@@ -90,7 +90,7 @@ class CallbackButton extends \Opencart\System\Engine\Controller
         }
 
         if (!$json) {
-            $this->model_extension_x_feedback_button_module_button->saveSettings($this->request->post);
+            $this->model_extension_x_callback_button_module_button->saveSettings($this->request->post);
 
             $this->load->model('setting/setting');
 
@@ -105,14 +105,25 @@ class CallbackButton extends \Opencart\System\Engine\Controller
 
     public function saveRequest(): void
     {
-        $this->model_extension_x_feedback_button_module_button->saveRequest($this->request->post);
+        $this->model_extension_x_callback_button_module_button->saveRequest($this->request->post);
         $this->response->setOutput(json_encode(['success' => true]));
     }
 
     public function deleteRequest(): void
     {
-        $this->model_extension_x_feedback_button_module_button->deleteRequest($this->request->post);
+        $this->model_extension_x_callback_button_module_button->deleteRequest($this->request->post);
         $this->response->addHeader('Content-Type: application/json');
         $this->response->setOutput(json_encode(['success' => true]));
+    }
+
+    public function install(): void
+    {
+        $this->load->model(self::EXTENSION_PATH);
+        $this->model_extension_x_callback_button_module_button->createDbTables($this->request->post);
+    }
+
+    public function uninstall() {
+        $this->load->model(self::EXTENSION_PATH);
+        $this->model_extension_x_callback_button_module_button->dropDbTables($this->request->post);
     }
 }

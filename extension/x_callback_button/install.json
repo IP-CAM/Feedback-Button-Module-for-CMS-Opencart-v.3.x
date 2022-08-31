@@ -1,7 +1,8 @@
 {
-  "name": "Callback Button By Xuborx Extension",
+  "name": "Callback Button By Xuborx",
+  "codename": "callback_button",
+  "license": "GPL",
   "version": "1.0.0",
   "author": "Xuborx",
-  "link": "https://www.xuborx.xyz",
-  "instruction": ""
+  "link": "https://www.xuborx.xyz/"
 }

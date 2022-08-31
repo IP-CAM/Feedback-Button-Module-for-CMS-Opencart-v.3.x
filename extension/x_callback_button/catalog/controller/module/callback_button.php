@@ -5,7 +5,7 @@ use Opencart\System\Engine\Registry;
 
 class CallbackButton extends \Opencart\System\Engine\Controller
 {
-    private const EXTENSION_PATH = 'extension/x_feedback_button/module/button';
+    private const EXTENSION_PATH = 'extension/x_callback_button/module/button';
     private const DEFAULT_NAME_NAME_FIELD = 'Your name';
     private const DEFAULT_NAME_EMAIL_FIELD = 'Your e-mail';
     private const DEFAULT_NAME_PHONE_FIELD = 'Your phone number';
@@ -26,10 +26,10 @@ class CallbackButton extends \Opencart\System\Engine\Controller
 
     public function index(): string
     {
-        $this->document->addStyle('extension/x_feedback_button/catalog/view/css/main.css');
-        $this->document->addScript('extension/x_feedback_button/catalog/view/js/main.js');
+        $this->document->addStyle('extension/x_callback_button/catalog/view/css/main.css');
+        $this->document->addScript('extension/x_callback_button/catalog/view/js/main.js');
 
-        $this->data = $this->model_extension_x_feedback_button_module_button->getSettings();
+        $this->data = $this->model_extension_x_callback_button_module_button->getSettings();
         $this->addPositionStyle($this->data);
 
         $language_code = $this->config->get('config_language');
@@ -94,7 +94,7 @@ class CallbackButton extends \Opencart\System\Engine\Controller
 
     public function saveRequest(): void
     {
-        $this->model_extension_x_feedback_button_module_button->saveRequest($this->request->post);
+        $this->model_extension_x_callback_button_module_button->saveRequest($this->request->post);
         $this->response->addHeader('Content-Type: application/json');
         $this->response->setOutput(json_encode(['status' => 1]));
     }
@@ -104,7 +104,7 @@ class CallbackButton extends \Opencart\System\Engine\Controller
         $this->data['button_position'] = $settings['position'];
 
         if (!$this->data['button_position']['data']['custom']) {
-            $this->document->addStyle('extension/x_feedback_button/catalog/view/css/positions/' . $this->data['button_position']['data']['position'] . '.css');
+            $this->document->addStyle('extension/x_callback_button/catalog/view/css/positions/' . $this->data['button_position']['data']['position'] . '.css');
             $this->data['button_position'] = null;
         }
     }
