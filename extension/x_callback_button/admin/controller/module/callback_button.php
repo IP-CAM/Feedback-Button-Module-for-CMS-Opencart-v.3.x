@@ -4,7 +4,7 @@ namespace Opencart\Admin\Controller\Extension\XFeedbackButton\Module;
 use Opencart\System\Engine\Registry;
 use \Opencart\System\Helper AS Helper;
 
-class Button extends \Opencart\System\Engine\Controller
+class CallbackButton extends \Opencart\System\Engine\Controller
 {
     private const EXTENSION_PATH = 'extension/x_feedback_button/module/button';
 

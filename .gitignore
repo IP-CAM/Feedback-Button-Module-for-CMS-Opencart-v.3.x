@@ -9,4 +9,4 @@
 /php.ini
 /robots.txt
 /extension/*
-!/extension/x_feedback_button
+!/extension/x_callback_button

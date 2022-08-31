@@ -1,7 +1,7 @@
 <?php
 namespace Opencart\Catalog\Model\Extension\XFeedbackButton\Module;
 
-class Button extends \Opencart\System\Engine\Model
+class CallbackButton extends \Opencart\System\Engine\Model
 {
     private const SETTINGS_TABLE_NAME = 'xu_callback_button_settings';
     private const REQUESTS_TABLE_NAME = 'xu_callback_button_requests';
